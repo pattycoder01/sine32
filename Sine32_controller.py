@@ -5,7 +5,7 @@ from tkinter import ttk, messagebox
 import serial
 import time
 
-TRANSPOSITION = 0  # transposition
+transpose_amount = 0  # transposition
 
 class MidiPatchbaySerial:
     def __init__(self, master):
@@ -17,7 +17,7 @@ class MidiPatchbaySerial:
         self.ser = None
         self.thread = None
 
-        self.transposition_var = tk.IntVar(value=TRANSPOSITION)
+        self.transposition_var = tk.IntVar(value=transpose_amount)
 
         ttk.Label(master, text="MIDI Input Port:").grid(row=0, column=0, sticky="w", padx=5, pady=5)
         self.in_combo = ttk.Combobox(master, state="readonly", width=40)
@@ -112,7 +112,7 @@ class MidiPatchbaySerial:
         while self.running:
             for msg in self.inport.iter_pending():
                 if msg.type in ['note_on', 'note_off']:
-                    note = max(0, min(127, msg.note + TRANSPOSITION))
+                    note = max(0, min(127, msg.note + transpose_amount))
                     velocity = msg.velocity if msg.type == 'note_on' else 0
                     on_off = 1 if velocity > 0 else 0
                     send_str = f"[{note};{velocity};{on_off}]\n"

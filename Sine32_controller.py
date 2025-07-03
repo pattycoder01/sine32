@@ -112,7 +112,7 @@ class MidiPatchbaySerial:
         while self.running:
             for msg in self.inport.iter_pending():
                 if msg.type in ['note_on', 'note_off']:
-                    note = max(0, min(127, msg.note + transpose_amount))
+                    note = max(0, min(127, msg.note + self.transposition_var.get()))
                     velocity = msg.velocity if msg.type == 'note_on' else 0
                     on_off = 1 if velocity > 0 else 0
                     send_str = f"[{note};{velocity};{on_off}]\n"
